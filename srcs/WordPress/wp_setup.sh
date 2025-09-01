@@ -26,7 +26,7 @@ if [[ ! -d /usr/share/nginx/wp-admin  ]]; then
         --dbpass="$MYSQL_PASSWORD" \
         --dbhost="$DB_HOST"
     ./wp-cli.phar --allow-root --path=/usr/share/nginx/ core install \
-        --url="$DOMAIN1" \
+        --url="$DOMAIN2" \
         --title="$WP_TITLE" \
         --admin_user="$WP_ADMIN_USERNAME" \
         --admin_password="$WP_ADMIN_PASSWORD" \
