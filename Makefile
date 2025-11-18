@@ -5,8 +5,6 @@ start : up
 stop : down
 
 build :
-	mkdir -p /home/lcamerly/data/mariadb
-	mkdir -p /home/lcamerly/data/nginx
 	docker compose build 
 
 up :
@@ -22,7 +20,6 @@ destroy:
 	docker compose down --rmi all -v
 
 clean : destroy
-	docker system prune -af
 
 re : destroy all
 
