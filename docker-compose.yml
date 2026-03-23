@@ -1,9 +1,11 @@
+name: Inception
+
 services:
 
   mariadb:
     container_name: mariadb
     env_file: .env
-    restart: always
+    restart: unless-stopped
     build: 
       context: srcs/MariaDB
       dockerfile: Dockerfile
@@ -13,25 +15,37 @@ services:
       - mariadb:/usr/share/mariadb
     ports : 
       - "3307:3307"
+    healthcheck:
+      test: [ "CMD", "/bin/healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 1m
+      start_interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 3
 
-  phpmyadmin:
-    container_name: phpmyadmin
+  adminer:
+    container_name: adminer
     env_file: .env
-    restart: always
-    build: 
-      context: srcs/PhPMyAdmin
-      dockerfile: Dockerfile
+    restart: unless-stopped
+    build:
+      context: srcs/Adminer
+      dockerfile: Dockerfile  
     networks: 
       - inception
     depends_on:
       - mariadb
     ports : 
-      - 127.0.0.1:8080:80
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   nginx:
     container_name: nginx
     env_file: .env
-    restart: always
+    restart: unless-stopped
     build: 
       context: srcs/NGinx
       dockerfile: Dockerfile
@@ -43,11 +57,15 @@ services:
       - wordpress
     ports : 
       - "443:443"
-      
+    healthcheck:
+      test: ['CMD', 'curl', '-k', "https://localhost" ]
+      interval: 120s
+      start_period: 5s
+
   wordpress:
     container_name: wordpress
     env_file: .env
-    restart: always
+    restart: unless-stopped
     build: 
       context: srcs/WordPress
       dockerfile: Dockerfile
@@ -59,12 +77,24 @@ services:
     depends_on:
       - mariadb
     ports: 
-      - "127.0.0.1:9000:9000"
+      - "9000:9000"
+  
+  redis:
+    privileged: true
+    container_name: redis
+    restart: unless-stopped
+    build:
+      context: srcs/Redis
+      dockerfile: Dockerfile
+    networks:
+      - inception
+    ports:
+      - 6379:6379
 
 volumes:
   mariadb:
   nginx:
-
+  
 networks:
   inception:
     driver: bridge
