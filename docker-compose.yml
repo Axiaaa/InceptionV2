@@ -52,15 +52,12 @@ services:
     networks: 
       - inception
     volumes: 
-      - nginx:/usr/share/nginx
+      - wordpress-files:/usr/share/nginx
     depends_on: 
       - wordpress
     ports : 
       - "443:443"
-    healthcheck:
-      test: ['CMD', 'curl', '-k', "https://localhost" ]
-      interval: 120s
-      start_period: 5s
+
 
   wordpress:
     container_name: wordpress
@@ -72,13 +69,51 @@ services:
     networks: 
       - inception
     volumes: 
-      - nginx:/usr/share/nginx
-      - mariadb:/usr/share/mariadb
+      - wordpress-files:/usr/share/nginx
     depends_on:
       - mariadb
+      - redis
     ports: 
       - "9000:9000"
-  
+
+  beszel:
+    container_name: beszel
+    restart: unless-stopped
+    build: 
+      context: srcs/Beszel
+      dockerfile: Dockerfile
+      target: server
+    environment:
+      - APP_URL=http://localhost:8090
+      - USER_EMAIL=admin@localhost.com
+      - USER_PASSWORD=admin@localhost.com
+    networks: 
+      - inception
+    ports: 
+      - "8090:8090"
+    healthcheck:
+      test: ['CMD', './beszel', 'health', '--url', 'http://localhost:8090']
+      start_period: 5s
+
+  beszel-agent:
+    container_name: beszel-agent
+    restart: unless-stopped
+    build: 
+      context: srcs/Beszel
+      dockerfile: Dockerfile
+      target: agent
+    environment:
+      - HUB_URL=http://beszel:8090
+      - ADMIN_EMAIL=admin@localhost.com
+      - ADMIN_PASSWORD=admin@localhost.com
+    networks: 
+      - inception
+    healthcheck:
+      test: ['CMD', './beszel-agent', 'health']
+      interval: 120s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
   redis:
     privileged: true
     container_name: redis
@@ -93,7 +128,17 @@ services:
 
 volumes:
   mariadb:
-  nginx:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/lcamerly/data/mariadb
+  wordpress-files:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/lcamerly/data/wordpress-files
   
 networks:
   inception:

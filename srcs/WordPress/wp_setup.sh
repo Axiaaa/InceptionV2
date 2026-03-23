@@ -17,7 +17,7 @@ if [[ ! -d /usr/share/nginx/wp-admin  ]]; then
     chown -R www-data:www-data /usr/share/nginx
 
     echo -e $BLUE"Waiting for DB"$NC
-    sleep 30
+    sleep 5
 
     echo -e $BLUE"Installing wordpress"$NC
     ./wp-cli.phar --allow-root --path=/usr/share/nginx/ config create \
@@ -34,6 +34,15 @@ if [[ ! -d /usr/share/nginx/wp-admin  ]]; then
     ./wp-cli.phar --allow-root --path=/usr/share/nginx/ user create 'test_user' 'test_user@student.42lyon.fr' \
         --user_pass='test_user' \
         --role='editor'
+    
+    
+    ./wp-cli.phar --allow-root --path=/usr/share/nginx/ config set WP_REDIS_HOST redis
+    ./wp-cli.phar --allow-root --path=/usr/share/nginx/ config set WP_REDIS_PORT 6379 --raw
+    ./wp-cli.phar --allow-root --path=/usr/share/nginx/ config set WP_CACHE true --raw
+    ./wp-cli.phar --allow-root --path=/usr/share/nginx/ plugin install redis-cache --activate
+    ./wp-cli.phar --allow-root --path=/usr/share/nginx/ redis enable
+    sleep 2
+    /wp-cli.phar --allow-root --path=/usr/share/nginx/ redis status 
 
     echo -e $GREEN"Done"$NC
 fi
