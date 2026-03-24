@@ -10,7 +10,6 @@ AUTH_USER=$(curl -s -X POST "$HUB_URL/api/collections/users/auth-with-password" 
 TOKEN=$(echo "$AUTH_USER" | jq -r '.token')
 ID=$(echo "$AUTH_USER" | jq -r '.record.id')
 
-echo $AUTH_USER $TOKEN $ID
 AGENT_KEY=$(curl -s GET "$HUB_URL/api/beszel/getkey" \
   -H "Authorization: $TOKEN")
 RESPONSE=$(curl -s -X POST "$HUB_URL/api/collections/systems/records" \
@@ -24,7 +23,6 @@ RESPONSE=$(curl -s -X POST "$HUB_URL/api/collections/systems/records" \
   }")
 
 AGENT_KEY=$(echo "$AGENT_KEY" | jq -r '.key')
-echo $AGENT_KEY $TOKEN
 echo "Token and key sucessfuly created!"
 
 ./beszel-agent -key "$AGENT_KEY" -token "$TOKEN" -url "$HUB_URL"

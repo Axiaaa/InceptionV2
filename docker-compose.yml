@@ -13,34 +13,29 @@ services:
       - inception
     volumes: 
       - mariadb:/usr/share/mariadb
-    ports : 
-      - "3307:3307"
     healthcheck:
-      test: [ "CMD", "/bin/healthcheck.sh", "--connect", "--innodb_initialized" ]
-      start_period: 1m
-      start_interval: 10s
-      interval: 1m
-      timeout: 5s
+      test: [ "CMD-SHELL", "/bin/healthcheck.sh --connect --innodb_initialized" ]
+      start_period: 5s
+      interval: 30s
       retries: 3
 
   adminer:
     container_name: adminer
-    env_file: .env #TODO Check if necessary
     restart: unless-stopped
     build:
       context: srcs/Adminer
-      dockerfile: Dockerfile  
+      dockerfile: Dockerfile
+      args:
+        - ADMINER_VERSION=$ADMINER_VERSION
     networks: 
       - inception
     depends_on:
       - mariadb
-    ports : 
-      - "8080:8080"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+      test: ["CMD-SHELL", "curl -s http://localhost:8080"]
+      start_period: 5s
+      interval: 30s
+      retries: 3
 
   nginx:
     container_name: nginx
@@ -57,6 +52,11 @@ services:
       - wordpress
     ports : 
       - "443:443"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sk https://localhost/status"]
+      start_period: 5s
+      interval: 30s
+      retries: 3
 
 
   wordpress:
@@ -73,8 +73,11 @@ services:
     depends_on:
       - mariadb
       - redis
-    ports: 
-      - "9000:9000"
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -r \"php-fpm: master process\""]
+      start_period: 5s
+      interval: 30s
+      retries: 3
 
   beszel:
     container_name: beszel
@@ -84,20 +87,21 @@ services:
       dockerfile: Dockerfile
       target: server
     environment:
-      - APP_URL=http://localhost:8090 #TODO remove
+      - APP_URL=https://lcamerly.42.fr/beszel #TODO remove
       - USER_EMAIL=admin@localhost.com
       - USER_PASSWORD=admin@localhost.com
     networks: 
       - inception
-    ports: 
-      - "8090:8090"
     healthcheck:
-      test: ['CMD', './beszel', 'health', '--url', 'http://localhost:8090']
+      test: ['CMD-SHELL', "./beszel health --url http://localhost:8090"]
       start_period: 5s
+      interval: 30s
+      retries: 3
 
   beszel-agent:
     container_name: beszel-agent
     restart: unless-stopped
+    hostname: InceptionCluster
     build: 
       context: srcs/Beszel
       dockerfile: Dockerfile
@@ -111,8 +115,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     healthcheck:
-      test: ['CMD', './beszel-agent', 'health']
-      interval: 120s
+      test: ['CMD-SHELL', "/beszel-agent health"]
+      start_period: 5s
+      interval: 30s
+      retries: 3
 
   redis:
     privileged: true
@@ -123,8 +129,11 @@ services:
       dockerfile: Dockerfile
     networks:
       - inception
-    ports:
-      - "6379:6379"
+    healthcheck:
+      test: "[ $(redis-cli ping) = 'PONG' ]"
+      start_period: 5s
+      interval: 30s
+      retries: 3
 
 volumes:
   mariadb:

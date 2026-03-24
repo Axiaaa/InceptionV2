@@ -1,29 +1,26 @@
-FROM debian:bookworm
+FROM alpine:3.22
 
-# Set the environment variables
+# Variables d'environnement
 ARG MYSQL_ROOT_PASSWORD
 ARG MYSQL_PASSWORD
 ARG MYSQL_USER
 
-# Install MariaDB
-RUN apt-get update && \
-    apt-get install -y mariadb-server curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Install MariaDB + tools
+RUN apk add --no-cache \
+    mariadb \
+    mariadb-client \
+    curl \
+    bash
 
-RUN mkdir -p /var/log/mysql
-RUN chown mysql:mysql /var/log/mysql
-# Copy the configuration file
-COPY my.cnf /etc/mysql/my.cnf
+RUN mkdir -p /run/mysqld /var/log/mysql && \
+    chown -R mysql:mysql /run/mysqld /var/log/mysql
 
-# Copy the script, set the permissions
+COPY my.cnf /etc/my.cnf
+
 COPY setup.sh /usr/bin/setup.sh
 RUN chmod +x /usr/bin/setup.sh
 
-RUN curl https://raw.githubusercontent.com/MariaDB/mariadb-docker/refs/heads/master/healthcheck.sh > /bin/healthcheck.sh
-RUN chmod +x /bin/healthcheck.sh
+RUN curl -o /bin/healthcheck.sh https://raw.githubusercontent.com/MariaDB/mariadb-docker/refs/heads/master/healthcheck.sh && \
+    chmod +x /bin/healthcheck.sh
 
-RUN echo "Starting MariaDB"
-
-# Run the script
 CMD ["/usr/bin/setup.sh"]

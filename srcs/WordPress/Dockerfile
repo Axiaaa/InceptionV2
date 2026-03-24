@@ -1,16 +1,32 @@
-FROM debian:bookworm
+FROM alpine:3.22
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install less curl unzip php php-mysql php-fpm mariadb-client -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache  php82 \
+                        php82-phar \
+                        php82-pdo \
+                        php82-pdo_mysql \
+                        php82-mysqli \
+                        php82-mbstring \
+                        php82-tokenizer \
+                        php82-json \
+                        php82-opcache \
+                        php82-ctype \
+                        php82-curl \
+                        php82-fpm \
+                        mariadb-client \
+                        curl \
+                        unzip \
+                        bash
 
-COPY ./www.conf /etc/php/8.2/fpm/pool.d/
+RUN ln -s /usr/bin/php82 /usr/bin/php
 
-COPY ./wp_setup.sh 	/usr/local/bin/wp_setup.sh
-RUN chmod +x /usr/local/bin/wp_setup.sh
+RUN addgroup -S www-data 2>/dev/null || true && \
+    adduser -S -D -G www-data www-data 2>/dev/null || true
+    
+RUN sed -i 's/^memory_limit = .*/memory_limit = 512M/' /etc/php82/php.ini
 
-RUN echo "Starting WordPress"
+COPY ./www.conf /etc/php82/php-fpm.d/www.conf
 
-CMD ["/usr/local/bin/wp_setup.sh"]
+COPY ./wp_setup.sh /wp_setup.sh
+RUN chmod +x /wp_setup.sh
+
+CMD ["/wp_setup.sh"]
