@@ -194,19 +194,3 @@ Both are ways to persist data outside a container's lifecycle or to "inject" dat
 A **bind mount** is simple: you point Docker to an existing path on your host (`/home/user/data`) and it gets mounted directly into the container. What the container writes, you see on your host in real time. Great for local development where you want live code reload, but it means your setup is tied to a specific host path — not very portable because very dependant of your filesystem and project structure. It needs careful use of permissions though.
 
 A **Docker volume** lets Docker manage the storage for you. It lives under `/var/lib/docker/volumes/` and has no dependency on your host's directory structure. You reference it by name, not by path. It's the recommended approach for anything that needs to survive container restarts (databases, uploads, generated files, etc...).
-
->[!note] Personal feelings
->I think bind mounts are very underrated. To me, the truth is that bind mounts just work. Of course when it comes to important data, persistence, volumes are more convenient but you can achieve literally the same thing a volume does with bind mount. The only exception being sharing data using remote storage (NFS, SMB, S3, etc...) but for 98% of usage, bind mounts just work as fine as volumes.
-> ```docker-compose.yml
-> services
-> 	mariadb:
-> 		image: mariadb
-> 		volumes: 
-> 			- /home/lcamerly/data/mariadb:/var/lib/mysql # bind mount
->	mariadb:
-> 		image: mariadb
-> 		volumes: 
-> 			- mariadb_data:/var/lib/mysql # volume
-> volumes:
-> 	mariadb_data:
-> ```
