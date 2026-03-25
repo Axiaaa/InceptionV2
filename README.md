@@ -83,7 +83,6 @@ Here's a diagram of the overall architecture defined in the ``docker-compose``:
 - Green arrows represent network connections with explicit ports between containers.
 - Red arrows represent connections made using domain names.
 
-![[Pasted image 20260324142453.png|378]]
 
 There are also named volumes mounted in ``/home/$USER/data/`` :
 
@@ -117,14 +116,14 @@ Dockerfiles are pretty straightforward. It always follows the same process :
 
 *This is the baseline. Of course, it might be a little different from time to time with extra instructions!*
 
-> [!tip] Tip
+> [!note]
 > The difference between ``CMD`` and ``ENTRYPOINT`` is that ``CMD`` can be overridden :
 > ```Dockerfile
-FROM debian:trixie
-ENTRYPOINT ["/bin/ping"]
-CMD ["localhost"]
+> FROM debian:trixie
+> ENTRYPOINT ["/bin/ping"]
+> CMD ["localhost"]
 >```
-> I can run the container with ``$ docker run -it test google.com`` and ``localhost`` will be overwritten by `google.com`
+> Running the container with ``$ docker run -it test google.com`` will be overwrite `localhost` by `google.com`
 >
 
 ### Virtual Machines vs Docker
