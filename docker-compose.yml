@@ -128,7 +128,6 @@ services:
       retries: 3
 
   redis:
-    privileged: true
     container_name: redis
     restart: unless-stopped
     build:
@@ -140,6 +139,20 @@ services:
       - inception
     healthcheck:
       test: "[ $(redis-cli ping) = 'PONG' ]"
+      start_period: 5s
+      interval: 30s
+      retries: 3
+
+  portfolio:
+    container_name: portfolio
+    restart: unless-stopped
+    build:
+      context: srcs/Portfolio
+      dockerfile: Dockerfile
+    networks:
+      - inception
+    healthcheck:
+      test: ['CMD-SHELL', "curl -s http://localhost:5173/portfolio/"]
       start_period: 5s
       interval: 30s
       retries: 3
@@ -157,6 +170,9 @@ volumes:
       type: none
       o: bind
       device: /home/${USER}/data/wordpress-files
+
+
+
 
 networks:
   inception:

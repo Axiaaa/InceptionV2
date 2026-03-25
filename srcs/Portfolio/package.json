@@ -1,0 +1,25 @@
+{
+  "name": "portofolio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "server": "node --require dotenv/config ./server/server.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "vite": "^7.0.4"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "dotenv": "^17.2.1",
+    "fastify": "^5.4.0",
+    "node-cron": "^4.2.1",
+    "particles.js": "^2.0.0"
+  }
+}
