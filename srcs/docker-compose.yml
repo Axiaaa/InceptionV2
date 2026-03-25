@@ -7,7 +7,7 @@ services:
     env_file: .env
     restart: unless-stopped
     build:
-      context: srcs/MariaDB
+      context: ./MariaDB
       dockerfile: Dockerfile
       args:
         - MARIADB_VERSION=$MARIADB_VERSION
@@ -25,7 +25,7 @@ services:
     container_name: adminer
     restart: unless-stopped
     build:
-      context: srcs/Adminer
+      context: ./Adminer
       dockerfile: Dockerfile
       args:
         - ADMINER_VERSION=$ADMINER_VERSION
@@ -43,7 +43,7 @@ services:
     container_name: nginx
     restart: unless-stopped
     build:
-      context: srcs/NGinx
+      context: ./NGinx
       dockerfile: Dockerfile
       args:
         - NGINX_VERSION=$NGINX_VERSION
@@ -67,7 +67,7 @@ services:
     env_file: .env
     restart: unless-stopped
     build:
-      context: srcs/WordPress
+      context: ./WordPress
       dockerfile: Dockerfile
     environment:
       - WP_VERSION=$WP_VERSION
@@ -88,7 +88,7 @@ services:
     container_name: beszel
     restart: unless-stopped
     build:
-      context: srcs/Beszel
+      context: ./Beszel
       dockerfile: server.Dockerfile
       args:
         - BESZEL_VERSION=$BESZEL_VERSION
@@ -109,7 +109,7 @@ services:
     restart: unless-stopped
     hostname: InceptionCluster
     build:
-      context: srcs/Beszel
+      context: ./Beszel
       dockerfile: agent.Dockerfile
       args:
         - BESZEL_VERSION=$BESZEL_VERSION
@@ -131,7 +131,7 @@ services:
     container_name: redis
     restart: unless-stopped
     build:
-      context: srcs/Redis
+      context: ./Redis
       dockerfile: Dockerfile
       args:
         - REDIS_VERSION=$REDIS_VERSION
@@ -147,7 +147,7 @@ services:
     container_name: portfolio
     restart: unless-stopped
     build:
-      context: srcs/Portfolio
+      context: ./Portfolio
       dockerfile: Dockerfile
     networks:
       - inception
@@ -162,7 +162,7 @@ services:
     container_name: vsftpd
     restart: unless-stopped
     build:
-      context: srcs/Vsftpd
+      context: ./Vsftpd
       dockerfile: Dockerfile
       args:
         - FTP_USER=$FTP_USER

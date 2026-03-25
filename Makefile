@@ -7,19 +7,19 @@ stop : down
 build :
 	mkdir -p /home/${USER}/data/mariadb
 	mkdir -p /home/${USER}/data/wordpress-files
-	docker compose build
+	docker compose --file srcs/docker-compose.yml build
 
 up :
-	docker compose up -d
+	docker compose --file srcs/docker-compose.yml up -d
 
 down :
-	docker compose down
+	docker compose --file srcs/docker-compose.yml down
 
 logs :
-	docker compose logs -f
+	docker compose --file srcs/docker-compose.yml logs -f
 
 destroy:
-	docker compose down --rmi all -v
+	docker compose --file srcs/docker-compose.yml down --rmi all -v
 	sudo rm -rf /home/${USER}/data/*
 
 

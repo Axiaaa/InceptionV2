@@ -11,7 +11,6 @@ if [[ ! -d /usr/share/nginx/wp-admin  ]]; then
     wget https://github.com/wp-cli/wp-cli/releases/download/v$WP_VERSION/wp-cli-$WP_VERSION.phar
     mv ./wp-cli-$WP_VERSION.phar wp-cli.phar
     chmod +x wp-cli.phar
-    echo $(ls -l)
 
     echo -e $BLUE"Downloading wordpress"$NC
     ./wp-cli.phar --allow-root --path=/usr/share/nginx/ core download
