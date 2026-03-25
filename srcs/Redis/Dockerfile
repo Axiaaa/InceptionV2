@@ -7,6 +7,7 @@ RUN apk --no-cache add bash redis=$REDIS_VERSION \
     && chown guest:users /data
     
 COPY redis.conf /usr/local/etc/redis/redis.conf
+RUN chown guest:users -R /var/run/ 
 
 COPY init.sh /init.sh
 RUN chmod +x init.sh
