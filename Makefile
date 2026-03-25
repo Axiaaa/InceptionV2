@@ -1,30 +1,30 @@
-all : build up 
+all : build up
 
 start : up
 
 stop : down
 
 build :
-	sudo mkdir -p /home/$USER/data/mariadb
-	sudo mkdir -p /home/$USER/data/wordpress-files
-	docker compose build
+        mkdir -p /home/${USER}/data/mariadb
+        mkdir -p /home/${USER}/data/wordpress-files
+        docker compose build
 
 up :
-	docker compose up -d
+        docker compose up -d
 
 down :
-	docker compose down
+        docker compose down
 
 logs :
-	docker compose logs -f
+        docker compose logs -f
 
 destroy:
-	docker compose down --rmi all -v
-	rm -rf /home/$USER/data/*
+        docker compose down --rmi all -v
+        sudo rm -rf /home/${USER}/data/*
 
 
 clean : destroy
-	docker system prune -af
+        docker system prune -af
 
 re : destroy all
 

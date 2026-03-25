@@ -6,14 +6,14 @@ services:
     container_name: mariadb
     env_file: .env
     restart: unless-stopped
-    build: 
+    build:
       context: srcs/MariaDB
       dockerfile: Dockerfile
       args:
-        - MARIADB_VERSION=$MARIADB_VERSION 
-    networks: 
+        - MARIADB_VERSION=$MARIADB_VERSION
+    networks:
       - inception
-    volumes: 
+    volumes:
       - mariadb:/usr/share/mariadb
     healthcheck:
       test: [ "CMD-SHELL", "/bin/healthcheck.sh --connect --innodb_initialized" ]
@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
       args:
         - ADMINER_VERSION=$ADMINER_VERSION
-    networks: 
+    networks:
       - inception
     depends_on:
       - mariadb
@@ -42,18 +42,18 @@ services:
   nginx:
     container_name: nginx
     restart: unless-stopped
-    build: 
+    build:
       context: srcs/NGinx
       dockerfile: Dockerfile
       args:
         - NGINX_VERSION=$NGINX_VERSION
-    networks: 
+    networks:
       - inception
-    volumes: 
+    volumes:
       - wordpress-files:/usr/share/nginx
-    depends_on: 
+    depends_on:
       - wordpress
-    ports : 
+    ports :
       - "443:443"
     healthcheck:
       test: ["CMD-SHELL", "curl -sk https://localhost/status"]
@@ -66,14 +66,14 @@ services:
     container_name: wordpress
     env_file: .env
     restart: unless-stopped
-    build: 
+    build:
       context: srcs/WordPress
       dockerfile: Dockerfile
     environment:
       - WP_VERSION=$WP_VERSION
-    networks: 
+    networks:
       - inception
-    volumes: 
+    volumes:
       - wordpress-files:/usr/share/nginx
     depends_on:
       - mariadb
@@ -87,17 +87,17 @@ services:
   beszel:
     container_name: beszel
     restart: unless-stopped
-    build: 
+    build:
       context: srcs/Beszel
       dockerfile: Dockerfile
       target: server
       args:
-        BESZEL_VERSION=$BESZEL_VERSION
+        - BESZEL_VERSION=$BESZEL_VERSION
     environment:
       - APP_URL=$APP_URL
       - USER_EMAIL=$ADMIN_EMAIL
       - USER_PASSWORD=$ADMIN_PASSWORD
-    networks: 
+    networks:
       - inception
     healthcheck:
       test: ['CMD-SHELL', "./beszel health --url http://localhost:8090"]
@@ -109,17 +109,17 @@ services:
     container_name: beszel-agent
     restart: unless-stopped
     hostname: InceptionCluster
-    build: 
+    build:
       context: srcs/Beszel
       dockerfile: Dockerfile
       target: agent
       args:
-        BESZEL_VERSION=$BESZEL_VERSION
+        - BESZEL_VERSION=$BESZEL_VERSION
     environment:
       - HUB_URL=$HUB_URL
       - ADMIN_EMAIL=$ADMIN_EMAIL
       - ADMIN_PASSWORD=$ADMIN_PASSWORD
-    networks: 
+    networks:
       - inception
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -137,7 +137,7 @@ services:
       context: srcs/Redis
       dockerfile: Dockerfile
       args:
-        REDIS_VERSION=$REDIS_VERSION
+        - REDIS_VERSION=$REDIS_VERSION
     networks:
       - inception
     healthcheck:
@@ -159,7 +159,7 @@ volumes:
       type: none
       o: bind
       device: /home/${USER}/data/wordpress-files
-  
+
 networks:
   inception:
     driver: bridge
