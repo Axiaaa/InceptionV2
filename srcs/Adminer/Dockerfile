@@ -1,11 +1,14 @@
 FROM alpine:3.22
 
+ARG ADMINER_VERSION=5.4.2
+
 RUN apk add --no-cache  php82 \
                         php82-pdo \
                         php82-pdo_mysql \
                         php82-pdo_pgsql \
                         php82-session \
                         curl
+
 RUN ln -s /usr/bin/php82 /usr/bin/php
 
 RUN	addgroup -S adminer \
@@ -13,9 +16,8 @@ RUN	addgroup -S adminer \
     &&	mkdir -p /var/www/html \
     &&	chown -R adminer:adminer /var/www/html
 
-ARG ADMINER_VERSION
-
 WORKDIR /var/www/html
+
 RUN curl -fsSL https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php -o index.php
 
 USER adminer

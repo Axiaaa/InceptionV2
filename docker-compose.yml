@@ -9,6 +9,8 @@ services:
     build: 
       context: srcs/MariaDB
       dockerfile: Dockerfile
+      args:
+        - MARIADB_VERSION=$MARIADB_VERSION 
     networks: 
       - inception
     volumes: 
@@ -39,11 +41,12 @@ services:
 
   nginx:
     container_name: nginx
-    env_file: .env #TODO Check if necessary
     restart: unless-stopped
     build: 
       context: srcs/NGinx
       dockerfile: Dockerfile
+      args:
+        - NGINX_VERSION=$NGINX_VERSION
     networks: 
       - inception
     volumes: 
@@ -66,6 +69,8 @@ services:
     build: 
       context: srcs/WordPress
       dockerfile: Dockerfile
+    environment:
+      - WP_VERSION=$WP_VERSION
     networks: 
       - inception
     volumes: 
@@ -86,10 +91,12 @@ services:
       context: srcs/Beszel
       dockerfile: Dockerfile
       target: server
+      args:
+        BESZEL_VERSION=$BESZEL_VERSION
     environment:
-      - APP_URL=https://lcamerly.42.fr/beszel #TODO remove
-      - USER_EMAIL=admin@localhost.com
-      - USER_PASSWORD=admin@localhost.com
+      - APP_URL=$APP_URL
+      - USER_EMAIL=$ADMIN_EMAIL
+      - USER_PASSWORD=$ADMIN_PASSWORD
     networks: 
       - inception
     healthcheck:
@@ -106,10 +113,12 @@ services:
       context: srcs/Beszel
       dockerfile: Dockerfile
       target: agent
+      args:
+        BESZEL_VERSION=$BESZEL_VERSION
     environment:
-      - HUB_URL=http://beszel:8090 #TODO remove
-      - ADMIN_EMAIL=admin@localhost.com
-      - ADMIN_PASSWORD=admin@localhost.com
+      - HUB_URL=$HUB_URL
+      - ADMIN_EMAIL=$ADMIN_EMAIL
+      - ADMIN_PASSWORD=$ADMIN_PASSWORD
     networks: 
       - inception
     volumes:
@@ -127,6 +136,8 @@ services:
     build:
       context: srcs/Redis
       dockerfile: Dockerfile
+      args:
+        REDIS_VERSION=$REDIS_VERSION
     networks:
       - inception
     healthcheck:
@@ -141,13 +152,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/lcamerly/data/mariadb
+      device: /home/${USER}/data/mariadb
   wordpress-files:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/lcamerly/data/wordpress-files
+      device: /home/${USER}/data/wordpress-files
   
 networks:
   inception:

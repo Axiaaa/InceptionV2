@@ -1,7 +1,9 @@
 FROM alpine:3.22
 
+ARG NGINX_VERSION=1.28.2-r0
+
 RUN apk add --no-cache \
-    nginx \
+    nginx=$NGINX_VERSION \
     openssl \
     curl
 

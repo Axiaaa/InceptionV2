@@ -5,8 +5,8 @@ start : up
 stop : down
 
 build :
-	sudo mkdir -p /home/lcamerly/data/mariadb
-	sudo mkdir -p /home/lcamerly/data/wordpress-files
+	sudo mkdir -p /home/$USER/data/mariadb
+	sudo mkdir -p /home/$USER/data/wordpress-files
 	docker compose build
 
 up :
@@ -20,7 +20,7 @@ logs :
 
 destroy:
 	docker compose down --rmi all -v
-	sudo rm -rf /home/lcamerly/data/*
+	rm -rf /home/$USER/data/*
 
 
 clean : destroy

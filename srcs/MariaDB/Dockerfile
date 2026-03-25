@@ -1,14 +1,10 @@
 FROM alpine:3.22
 
-# Variables d'environnement
-ARG MYSQL_ROOT_PASSWORD
-ARG MYSQL_PASSWORD
-ARG MYSQL_USER
+ARG MARIADB_VERSION=11.4.8-r0
 
-# Install MariaDB + tools
 RUN apk add --no-cache \
-    mariadb \
-    mariadb-client \
+    mariadb=$MARIADB_VERSION \
+    mariadb-client=$MARIADB_VERSION \
     curl \
     bash
 
