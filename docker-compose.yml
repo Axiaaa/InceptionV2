@@ -89,8 +89,7 @@ services:
     restart: unless-stopped
     build:
       context: srcs/Beszel
-      dockerfile: Dockerfile
-      target: server
+      dockerfile: server.Dockerfile
       args:
         - BESZEL_VERSION=$BESZEL_VERSION
     environment:
@@ -111,8 +110,7 @@ services:
     hostname: InceptionCluster
     build:
       context: srcs/Beszel
-      dockerfile: Dockerfile
-      target: agent
+      dockerfile: agent.Dockerfile
       args:
         - BESZEL_VERSION=$BESZEL_VERSION
     environment:
