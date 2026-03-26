@@ -2,7 +2,9 @@ FROM alpine:3.22
 
 ARG BESZEL_VERSION=0.18.4
 
-RUN apk --no-cache add curl
+RUN apk --no-cache add \ 
+        curl \
+    && rm -f /var/cache/apk/*
 
 RUN addgroup -S beszel && \
     adduser -S beszel -G beszel

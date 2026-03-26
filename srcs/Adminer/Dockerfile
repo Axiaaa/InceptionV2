@@ -2,12 +2,14 @@ FROM alpine:3.22
 
 ARG ADMINER_VERSION=5.4.2
 
-RUN apk add --no-cache  php82 \
-                        php82-pdo \
-                        php82-pdo_mysql \
-                        php82-pdo_pgsql \
-                        php82-session \
-                        curl
+RUN apk add --no-cache \
+        php82 \
+        php82-pdo \
+        php82-pdo_mysql \
+        php82-pdo_pgsql \
+        php82-session \
+        curl \
+    && rm -f /var/cache/apk/*
 
 RUN ln -s /usr/bin/php82 /usr/bin/php
 

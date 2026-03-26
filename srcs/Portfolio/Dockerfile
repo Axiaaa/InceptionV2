@@ -1,6 +1,11 @@
 FROM alpine:3.22
 
-RUN apk add curl nodejs npm
+RUN apk add --no-cache \
+        curl \ 
+        nodejs \ 
+        npm \
+    && rm -f /var/cache/apk/*
+
 
 WORKDIR /app
 

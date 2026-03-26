@@ -3,10 +3,11 @@ FROM alpine:3.22
 ARG MARIADB_VERSION=11.4.8-r0
 
 RUN apk add --no-cache \
-    mariadb=$MARIADB_VERSION \
-    mariadb-client=$MARIADB_VERSION \
-    curl \
-    bash
+            mariadb=$MARIADB_VERSION \
+            mariadb-client=$MARIADB_VERSION \
+            curl \
+            bash \
+    && rm -f /var/cache/apk/*
 
 RUN mkdir -p /run/mysqld /var/log/mysql && \
     chown -R mysql:mysql /run/mysqld /var/log/mysql

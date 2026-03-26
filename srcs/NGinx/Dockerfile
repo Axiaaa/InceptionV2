@@ -3,9 +3,10 @@ FROM alpine:3.22
 ARG NGINX_VERSION=1.28.2-r0
 
 RUN apk add --no-cache \
-    nginx=$NGINX_VERSION \
-    openssl \
-    curl
+        nginx=$NGINX_VERSION \
+        openssl \
+        curl \
+    && rm -f /var/cache/apk/*
 
 RUN mkdir -p /etc/nginx/ssl /run/nginx
 

@@ -1,21 +1,23 @@
 FROM alpine:3.22
 
-RUN apk add --no-cache  php82 \
-                        php82-phar \
-                        php82-pdo \
-                        php82-pdo_mysql \
-                        php82-mysqli \
-                        php82-mbstring \
-                        php82-tokenizer \
-                        php82-json \
-                        php82-opcache \
-                        php82-ctype \
-                        php82-curl \
-                        php82-fpm \
-                        mariadb-client \
-                        curl \
-                        unzip \
-                        bash
+RUN apk add --no-cache \
+        php82 \
+        php82-phar \
+        php82-pdo \
+        php82-pdo_mysql \
+        php82-mysqli \
+        php82-mbstring \
+        php82-tokenizer \
+        php82-json \
+        php82-opcache \
+        php82-ctype \
+        php82-curl \
+        php82-fpm \
+        mariadb-client \
+        curl \
+        unzip \
+        bash \
+    && rm -f /var/cache/apk/*
 
 RUN ln -s /usr/bin/php82 /usr/bin/php
 
