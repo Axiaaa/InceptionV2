@@ -188,7 +188,7 @@ services:
     networks:
       - inception
     healthcheck:
-      test: ['CMD-SHELL', "curl http://localhost:8080"]
+      test: ['CMD-SHELL', "wget --spider http://localhost:8081"]
       start_period: 5s
       interval: 30s
       retries: 3
